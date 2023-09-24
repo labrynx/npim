@@ -1,0 +1,168 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "projectStructure": {
+            "type": "array",
+            "description": "List of directories to create.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "packager": {
+            "type": "object",
+            "description": "Package manager settings.",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Package manager type (e.g., npm, yarn)."
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Package manager-specific configuration.",
+                    "properties": {
+                        "dependencies": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "List of production dependencies to install."
+                        },
+                        "devDependencies": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "List of development dependencies to install."
+                        }
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "config"
+            ]
+        },
+        "git": {
+            "type": "object",
+            "description": "Git repository settings.",
+            "properties": {
+                "init": {
+                    "type": "boolean",
+                    "description": "Initialize a new Git repository."
+                },
+                "remote": {
+                    "type": "string",
+                    "description": "Remote repository URL."
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "Default branch name."
+                }
+            }
+        },
+        "ci_cd": {
+            "type": "object",
+            "description": "CI/CD settings.",
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "description": "CI/CD provider (e.g., GitHub Actions, Jenkins)."
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Provider-specific configuration."
+                }
+            }
+        },
+        "database": {
+            "type": "object",
+            "description": "Database settings.",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Database type (e.g., MongoDB, PostgreSQL)."
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Database-specific configuration."
+                }
+            }
+        },
+        "testing": {
+            "type": "object",
+            "description": "Testing environment settings.",
+            "properties": {
+                "framework": {
+                    "type": "string",
+                    "description": "Testing framework (e.g., Jest, Mocha)."
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Framework-specific configuration."
+                }
+            }
+        },
+        "documentation": {
+            "type": "object",
+            "description": "Documentation settings.",
+            "properties": {
+                "tool": {
+                    "type": "string",
+                    "description": "Documentation tool (e.g., JSDoc, Swagger)."
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Tool-specific configuration."
+                }
+            }
+        },
+        "security": {
+            "type": "object",
+            "description": "Security settings.",
+            "properties": {
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of security features to enable (e.g., CORS, input sanitization)."
+                }
+            }
+        },
+        "deployment": {
+            "type": "object",
+            "description": "Deployment settings.",
+            "properties": {
+                "environments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of deployment environments (e.g., development, staging, production)."
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Environment-specific configuration."
+                }
+            }
+        },
+        "i18n": {
+            "type": "object",
+            "description": "Internationalization settings.",
+            "properties": {
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of languages to support."
+                }
+            }
+        }
+    },
+    "required": [
+        "projectStructure",
+        "git"
+    ]
+}
