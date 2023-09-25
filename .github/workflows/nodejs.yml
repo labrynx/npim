@@ -51,39 +51,39 @@ jobs:
         continue-on-error: true
       - run: git push origin development
 
-release:
-  needs: build-and-test
-  if: github.ref == 'refs/heads/main'
-  runs-on: ubuntu-latest
-  permissions:
-    contents: write
-  steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
+  release:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
 
-    - name: Check if package exists on npm
-      id: check_package
-      run: |
-        if npm show @labrynx/npim version; then
-          echo "Package exists"
-          echo "PACKAGE_EXISTS=true" >> $GITHUB_ENV
-        else
-          echo "Package does not exist"
-          echo "PACKAGE_EXISTS=false" >> $GITHUB_ENV
-        fi
-      continue-on-error: true
+      - name: Check if package exists on npm
+        id: check_package
+        run: |
+          if npm show @labrynx/npim version; then
+            echo "Package exists"
+            echo "PACKAGE_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "Package does not exist"
+            echo "PACKAGE_EXISTS=false" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
 
-    - name: Check package version
-      id: cpv
-      uses: PostHog/check-package-version@v2
-      continue-on-error: true
+      - name: Check package version
+        id: cpv
+        uses: PostHog/check-package-version@v2
+        continue-on-error: true
 
-    - name: Install dependencies
-      if: env.PACKAGE_EXISTS == 'true' && steps.cpv.outputs.is-new-version == 'true'
-      run: npm ci
+      - name: Install dependencies
+        if: env.PACKAGE_EXISTS == 'true' && steps.cpv.outputs.is-new-version == 'true'
+        run: npm ci
 
-    - name: Publish new version
-      if: env.PACKAGE_EXISTS == 'false' || steps.cpv.outputs.is-new-version == 'true'
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish new version
+        if: env.PACKAGE_EXISTS == 'false' || steps.cpv.outputs.is-new-version == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
