@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/labrynx/npim#readme",
   "devDependencies": {
-    "@google/semantic-release-replace-plugin": "^1.2.7",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^11.0.0",
     "@semantic-release/git": "^10.0.1",
@@ -39,6 +38,7 @@
     "jest": "^29.7.0",
     "prettier": "^3.0.3",
     "semantic-release": "^22.0.5",
+    "semantic-release-replace-plugin": "^1.2.7",
     "typescript": "^5.2.2"
   }
 }
