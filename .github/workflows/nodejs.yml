@@ -1,0 +1,77 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    strategy:
+      matrix:
+        node: [20]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - run: git log --oneline -n 5
+      - run: npm run build
+      # - run: npm run test
+      - run: ls -al
+
+  update-package-version:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/development'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npx semantic-release --dry-run --branches development
+      - run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git diff-index --quiet HEAD || git commit -am "Update package version" || echo "No changes to commit"
+        continue-on-error: true
+      - run: git push origin development
+
+  release:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Check package version
+        id: cpv
+        uses: PostHog/check-package-version@v2
+
+      - name: Install dependencies
+        if: steps.cpv.outputs.is-new-version == 'true'
+        run: npm ci
+
+      - name: Publish new version
+        if: steps.cpv.outputs.is-new-version == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
